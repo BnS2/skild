@@ -9,6 +9,8 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
+import { logger } from "#/lib/logger";
+
 const SkillCard = ({
 	authorEmail,
 	category,
@@ -30,8 +32,7 @@ const SkillCard = ({
 				setTimeout(() => setCopied(false), 2000);
 			})
 			.catch((error) => {
-				// TODO: will change to a global logger or toast determined by NODE_ENV, for now console.error
-				console.error("Failed to copy install command", error);
+				logger.error("Failed to copy install command", error);
 			});
 	};
 
