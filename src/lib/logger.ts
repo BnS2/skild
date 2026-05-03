@@ -18,6 +18,7 @@ interface LogEntry {
 	timestamp: string;
 	context?: string;
 	data?: unknown;
+	error?: unknown;
 }
 
 class Logger {
@@ -30,7 +31,7 @@ class Logger {
 		this.minLevel = options.level ?? (IS_DEV ? LogLevel.DEBUG : LogLevel.INFO);
 	}
 
-	private log(level: LogLevel, message: string, data?: unknown) {
+	private log(level: LogLevel, message: unknown, data?: unknown) {
 		if (level < this.minLevel || level === LogLevel.SILENT) return;
 
 		const timestamp = new Date().toISOString();
@@ -41,12 +42,50 @@ class Logger {
 		if (!IS_DEV) {
 			const entry: LogEntry = {
 				level: levelName,
-				message,
+				message: message instanceof Error ? message.message : String(message),
 				timestamp,
 				context: this.context,
 				data,
+				error:
+					message instanceof Error
+						? message
+						: data instanceof Error
+							? data
+							: undefined,
 			};
-			console[method](JSON.stringify(entry));
+
+			const seen = new WeakSet();
+			const replacer = (_key: string, value: unknown) => {
+				if (typeof value === "object" && value !== null) {
+					if (seen.has(value)) return "[Circular]";
+					seen.add(value);
+				}
+				if (value instanceof Error) {
+					return {
+						...value,
+						name: value.name,
+						message: value.message,
+						stack: value.stack,
+						cause: (value as Error).cause,
+					};
+				}
+				return value;
+			};
+
+			let output: string;
+			try {
+				output = JSON.stringify(entry, replacer);
+			} catch (err) {
+				// Fallback for extreme cases
+				output = JSON.stringify({
+					level: levelName,
+					message: `[Serialization Error] ${entry.message}`,
+					timestamp,
+					error: String(err),
+				});
+			}
+
+			console[method](output);
 			return;
 		}
 
@@ -91,19 +130,19 @@ class Logger {
 		);
 	}
 
-	debug(message: string, data?: unknown) {
+	debug(message: unknown, data?: unknown) {
 		this.log(LogLevel.DEBUG, message, data);
 	}
 
-	info(message: string, data?: unknown) {
+	info(message: unknown, data?: unknown) {
 		this.log(LogLevel.INFO, message, data);
 	}
 
-	warn(message: string, data?: unknown) {
+	warn(message: unknown, data?: unknown) {
 		this.log(LogLevel.WARN, message, data);
 	}
 
-	error(message: string, data?: unknown) {
+	error(message: unknown, data?: unknown) {
 		this.log(LogLevel.ERROR, message, data);
 	}
 
