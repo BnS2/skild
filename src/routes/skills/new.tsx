@@ -1,6 +1,7 @@
+import { useAuth } from "@clerk/tanstack-react-start";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Loader2, Plus } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createSkill } from "#/dataconnect-generated";
 import { dataConnect } from "#/lib/firebase";
 import { logger } from "#/lib/logger";
@@ -16,6 +17,7 @@ export const Route = createFileRoute("/skills/new")({
 
 function NewSkillPage() {
 	const navigate = useNavigate({ from: Route.fullPath });
+	const { isLoaded, userId } = useAuth();
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [formData, setFormData] = useState({
@@ -27,8 +29,30 @@ function NewSkillPage() {
 		usageExample: "",
 	});
 
+	const [isPublishingAvailable, setIsPublishingAvailable] = useState(false);
+
+	useEffect(() => {
+		if (isLoaded && userId) {
+			// LEARNING NOTE: In a real app with auth bridge implemented,
+			// we would verify the Firebase token bridge here.
+			// For now, we allow the form to be submitted (it will fail at mutation)
+			setIsPublishingAvailable(true);
+		} else {
+			setIsPublishingAvailable(false);
+		}
+	}, [isLoaded, userId]);
+
+	// LEARNING NOTE: This mutation will fail - auth bridge not implemented yet.
+	// This is intentional for the current learning stage.
+	// See auth-integration.md for future implementation steps.
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
+
+		if (!isPublishingAvailable) {
+			setError("Please sign in to publish a skill.");
+			return;
+		}
+
 		setIsSubmitting(true);
 		setError(null);
 
@@ -69,8 +93,8 @@ function NewSkillPage() {
 			</header>
 
 			<form onSubmit={handleSubmit} className="content">
-				<div className="card">
-					<div className="space-y-8">
+				<div className="card flex flex-col gap-12">
+					<div className="flex flex-col gap-8">
 						<div className="form-item">
 							<label className="form-label" htmlFor="skill-title">
 								Title
@@ -194,8 +218,17 @@ function NewSkillPage() {
 					</div>
 
 					{error && (
-						<div className="alert error mb-6">
+						<div className="alert error">
 							<p>{error}</p>
+						</div>
+					)}
+
+					{!isPublishingAvailable && (
+						<div className="alert warn">
+							<p>
+								<strong>Note:</strong> Publishing is currently disabled while we
+								finalize our authentication bridge.
+							</p>
 						</div>
 					)}
 
@@ -203,7 +236,7 @@ function NewSkillPage() {
 						<button
 							type="submit"
 							className="btn-primary"
-							disabled={isSubmitting}
+							disabled={isSubmitting || !isPublishingAvailable}
 						>
 							{isSubmitting ? (
 								<Loader2 size={18} className="animate-spin" />

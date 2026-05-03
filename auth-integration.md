@@ -1,4 +1,26 @@
 /**
+ * LEARNING REPOSITORY NOTE:
+ *
+ * This repo is for learning TanStack Start + Firebase Data Connect.
+ * The auth bridge documented below is NOT implemented YET.
+ *
+ * WHY NOT NOW?
+ * - This is a learning project, implementing the Clerk → Firebase token bridge
+ *   is a complex step that will be tackled in a future learning session.
+ * - Current focus: Understanding Data Connect schema, queries, and mutations
+ *   without auth complexity.
+ *
+ * NEXT STEPS:
+ * When ready to learn auth integration, refer to REQUIREMENTS FOR THIS TO WORK
+ * section below and implement the token bridge.
+ *
+ * CURRENT BEHAVIOR:
+ * - Read queries (getSkills, getUsers) may work without auth
+ * - Authenticated mutations (createSkill) will fail with auth errors
+ * - This is EXPECTED for the current learning stage
+ */
+
+/**
  * CLERK + FIREBASE DATA CONNECT INTEGRATION NOTE
  *
  * Firebase Data Connect's @auth directive only understands Firebase Auth tokens.
