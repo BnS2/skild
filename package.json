@@ -37,6 +37,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.5",
+    "@bns2/eslint-plugin-tailwind-v4": "^1.0.6",
     "@rolldown/plugin-babel": "^0.2.3",
     "@tailwindcss/typography": "^0.5.16",
     "@tanstack/devtools-vite": "latest",
@@ -45,9 +46,13 @@
     "@types/node": "^22.10.2",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
+    "@typescript-eslint/parser": "^8.59.1",
     "@vitejs/plugin-react": "^6.0.1",
     "babel-plugin-react-compiler": "^1.0.0",
+    "eslint": "^10.3.0",
+    "eslint-config-biome": "^2.1.3",
     "jsdom": "^28.1.0",
+    "postcss": "^8.5.13",
     "typescript": "^6.0.2",
     "vite": "^8.0.0",
     "vitest": "^4.1.5"
