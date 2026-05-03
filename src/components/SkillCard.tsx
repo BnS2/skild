@@ -23,9 +23,16 @@ const SkillCard = ({
 	const handleCopy = (e: React.MouseEvent) => {
 		e.preventDefault();
 		e.stopPropagation();
-		navigator.clipboard.writeText(installCommand);
-		setCopied(true);
-		setTimeout(() => setCopied(false), 2000);
+		navigator.clipboard
+			.writeText(installCommand)
+			.then(() => {
+				setCopied(true);
+				setTimeout(() => setCopied(false), 2000);
+			})
+			.catch((error) => {
+				// TODO: will change to a global logger or toast determined by NODE_ENV, for now console.error
+				console.error("Failed to copy install command", error);
+			});
 	};
 
 	return (
@@ -54,7 +61,11 @@ const SkillCard = ({
 						<img src="/logo512.png" alt="author avatar" className="avatar" />
 						<div className="author-copy">
 							<p>BnS</p>
-							<p>{new Date(createdAt as string).toLocaleDateString()}</p>
+							<p>
+								{createdAt
+									? new Date(createdAt).toLocaleDateString()
+									: "Unknown"}
+							</p>
 						</div>
 					</div>
 
@@ -101,7 +112,7 @@ const SkillCard = ({
 						</div>
 					</div>
 
-					<div className="actions">
+					<div className="footer-actions">
 						<Link to="/skills" className="open" title={`Open ${title}`}>
 							<span>Open</span>
 							<ArrowUpRight size={14} />

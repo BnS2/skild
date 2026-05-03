@@ -658,7 +658,7 @@
 
 /*  Extracted actions utility  */
 
-@utility actions{
+@utility footer-actions{
       @apply flex items-center gap-2;
 }
 
