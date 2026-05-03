@@ -1,6 +1,24 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { createServerFn } from "@tanstack/react-start";
 import { Terminal } from "lucide-react";
 import SkillCard from "#/components/SkillCard";
+import { getSkills } from "#/dataconnect-generated";
+import { dataConnect } from "#/lib/firebase";
+import logger from "#/lib/logger";
+
+const getSkillsFn = createServerFn({ method: "GET" }).handler(async () => {
+	try {
+		const { data } = await getSkills(dataConnect, {
+			searchTerm: "",
+			limit: 10,
+		});
+
+		return data.skills;
+	} catch (err) {
+		logger.error(err);
+		return [];
+	}
+});
 
 const skills: SkillRecord[] = [
 	{
@@ -71,14 +89,13 @@ const skills: SkillRecord[] = [
 ];
 
 export const Route = createFileRoute("/")({
-	loader: async () => {
-		return { skills };
-	},
+	loader: async () => getSkillsFn(),
 	component: Home,
 });
 
 function Home() {
-	const { skills } = Route.useLoaderData();
+	const skills = Route.useLoaderData();
+
 	return (
 		<div id="home">
 			<section className="hero">
@@ -95,7 +112,7 @@ function Home() {
 				</div>
 
 				<div className="actions">
-					<Link to="/skills" className="btn-primary">
+					<Link to="/skills" className="btn-primary" search={{ q: "" }}>
 						<Terminal size={18} />
 						<span>Browse Registry</span>
 					</Link>
@@ -111,10 +128,7 @@ function Home() {
 						Recently Created <span className="text-gradient">Skills</span>
 					</h2>
 				</div>
-				<p>
-					{" "}
-					Latest skills loaded from Firestore in descending creation order.
-				</p>
+				<p> Latest skills loaded from database in descending creation order.</p>
 
 				<div>
 					{skills.length > 0 ? (
