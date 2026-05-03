@@ -36,7 +36,6 @@ export interface GetSkillsData {
       username?: string | null;
       imageUrl?: string | null;
       clerkId: string;
-      email: string;
     } & User_Key;
   } & Skill_Key)[];
 }
@@ -56,18 +55,6 @@ export interface User_Key {
   __typename?: 'User_Key';
 }
 
-interface CreateSkillRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: CreateSkillVariables): MutationRef<CreateSkillData, CreateSkillVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: CreateSkillVariables): MutationRef<CreateSkillData, CreateSkillVariables>;
-  operationName: string;
-}
-export const createSkillRef: CreateSkillRef;
-
-export function createSkill(vars: CreateSkillVariables): MutationPromise<CreateSkillData, CreateSkillVariables>;
-export function createSkill(dc: DataConnect, vars: CreateSkillVariables): MutationPromise<CreateSkillData, CreateSkillVariables>;
-
 interface GetSkillsRef {
   /* Allow users to create refs without passing in DataConnect */
   (vars?: GetSkillsVariables): QueryRef<GetSkillsData, GetSkillsVariables>;
@@ -79,4 +66,16 @@ export const getSkillsRef: GetSkillsRef;
 
 export function getSkills(vars?: GetSkillsVariables, options?: ExecuteQueryOptions): QueryPromise<GetSkillsData, GetSkillsVariables>;
 export function getSkills(dc: DataConnect, vars?: GetSkillsVariables, options?: ExecuteQueryOptions): QueryPromise<GetSkillsData, GetSkillsVariables>;
+
+interface CreateSkillRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: CreateSkillVariables): MutationRef<CreateSkillData, CreateSkillVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: CreateSkillVariables): MutationRef<CreateSkillData, CreateSkillVariables>;
+  operationName: string;
+}
+export const createSkillRef: CreateSkillRef;
+
+export function createSkill(vars: CreateSkillVariables): MutationPromise<CreateSkillData, CreateSkillVariables>;
+export function createSkill(dc: DataConnect, vars: CreateSkillVariables): MutationPromise<CreateSkillData, CreateSkillVariables>;
 

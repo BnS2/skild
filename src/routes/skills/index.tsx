@@ -34,7 +34,7 @@ export const Route = createFileRoute("/skills/")({
 			return data.skills;
 		} catch (err) {
 			logger.error(err);
-			return [] as GetSkillsData["skills"];
+			throw err;
 		}
 	},
 	component: SkillsPage,
@@ -80,7 +80,11 @@ function SkillsPage() {
 							<input
 								type="text"
 								name="q"
-								defaultValue={q}
+								value={q}
+								onChange={(e) => {
+									const val = e.target.value;
+									navigate({ search: (prev) => ({ ...prev, q: val || "" }) });
+								}}
 								placeholder="Search by title, tag, or author..."
 								className="input-field search-input"
 								autoComplete="off"

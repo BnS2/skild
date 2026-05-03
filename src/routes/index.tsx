@@ -16,7 +16,7 @@ const getSkillsFn = createServerFn({ method: "GET" }).handler(async () => {
 		return data.skills;
 	} catch (err) {
 		logger.error(err);
-		return [];
+		throw err;
 	}
 });
 
@@ -116,7 +116,7 @@ function Home() {
 						<Terminal size={18} />
 						<span>Browse Registry</span>
 					</Link>
-					<Link to="/skills/new" className="btn-secondary">
+					<Link to="/skills/new" className="btn-secondary" search={{ q: "" }}>
 						<span>Publish Skill</span>
 					</Link>
 				</div>
