@@ -1,0 +1,7 @@
+# This is a file for you to write an un-named mutation. 
+# Only one un-named mutation is allowed per file.
+mutation {
+  skill_insert(
+    data: {id: "11111111222233334444555555555558", authorClerkId: "user_3DD4LUmdtHP3zqHClGRR1JYvBdc", createdAt: "2026-05-03T13:27:48.796Z", description: "An AI agent that automatically reviews pull requests and provides constructive feedback on code quality.", installCommand: "npm install @skill/code-review-assistant", promptConfig: "You are a code review assistant", tags: ["AI", "Code Review", "GitHub"], title: "Code Review Assistant", usageExample: "Review the code and optimize it"}
+  )
+}
